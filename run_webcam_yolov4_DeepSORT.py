@@ -1,7 +1,6 @@
 import os.path as osp 
 import time 
 
-
 import cv2 
 import numpy as np 
 from PIL import Image
@@ -34,17 +33,12 @@ flags.DEFINE_boolean('dont_show', False, 'dont show video output')
 flags.DEFINE_boolean('info', False, 'show detailed info of tracked objects')
 flags.DEFINE_boolean('count', False, 'count objects being tracked on screen')
 
-
-
-physical_devices = tf.config.list_physical_devices('GPU')   # GPU 장치 목록 출력; 
-                                                            # (ref) https://stackoverflow.com/questions/58956619/tensorflow-2-0-list-physical-devices-doesnt-detect-my-gpu
+physical_devices = tf.config.list_physical_devices('GPU')   
 
 if physical_devices:
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
 else: 
     print("No GPU")
-
 
 
 def model_inference(image_input, interpreter, input_details, output_details ):
@@ -52,11 +46,8 @@ def model_inference(image_input, interpreter, input_details, output_details ):
     interpreter.set_tensor(input_details[0]['index'], image_input)
     interpreter.invoke()
     pred = [interpreter.get_tensor(output_details[i]['index']) for i in range(len(output_details))]
-
     boxes, pred_conf = filter_boxes(pred[0], pred[1], score_threshold=0.25, input_shape=tf.constant([FLAGS.size, FLAGS.size]))
-
     return  boxes, pred_conf 
-
 
 
 def main(_argv):
@@ -66,24 +57,16 @@ def main(_argv):
     STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(FLAGS)
     input_size = FLAGS.size
 
-
-    """ init. Webcam object 
-    """
-    vid  = cv2.VideoCapture(0)   # (ref) https://076923.github.io/posts/Python-opencv-2/
+    #cv2.CAP_AVFOUNDATION
+    vid  = cv2.VideoCapture(0)
     vid.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-
-    """ Setup model 
-    """
     interpreter = tf.lite.Interpreter(model_path=FLAGS.weights)
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
 
-
-    """ init. Deep SORT object  
-    """
     max_cosine_distance = 0.4
     nn_budget = None
     nms_max_overlap = 1.0
@@ -243,12 +226,7 @@ def main(_argv):
         result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         if not FLAGS.dont_show:
             cv2.imshow("Output", result)
-
             if cv2.waitKey(1) & 0xFF == ord('q'): break   
-
-        
-
-
 
 
     vid.release()
