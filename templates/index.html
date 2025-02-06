@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Object Detection Feed</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #f3f4f6;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    #video-feed {
+      max-width: 80%;
+      border: 5px solid #ccc;
+      margin: 20px auto;
+      display: block;
+    }
+    .control-buttons {
+      margin-top: 15px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Object Detection Feed</h1>
+  <img id="video-feed" src="/video_feed" alt="Live Video Stream">
+  
+  <div class="control-buttons">
+    <button onclick="startFeed()">Start Feed</button>
+    <button onclick="stopFeed()">Stop Feed</button>
+  </div>
+
+  <script>
+    let feedEnabled = false;
+
+    function startFeed() {
+      if (!feedEnabled) {
+        document.getElementById('video-feed').src = '/video_feed';
+        feedEnabled = true;
+      }
+    }
+
+    function stopFeed() {
+      if (feedEnabled) {
+        document.getElementById('video-feed').src = '';
+        feedEnabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
